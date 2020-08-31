@@ -7,9 +7,9 @@ import { getBrands, createBrand } from "../controllers/rest.ts";
 const router = new Router();
 
 //declarating routes of our API
-
 router
     .get("/brands", getBrands)
     .post("/brand", createBrand)
+    .post("/brand/add/product", )
 
 export default router;
