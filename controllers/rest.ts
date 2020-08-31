@@ -1,6 +1,10 @@
+//import context of request and responses from deno
 import { Context } from 'https://deno.land/x/oak/mod.ts'
+//import db config
 import db from '../db/mongo.ts';
+//import interface
 import BrandModel from '../models/brand.ts';
+//import validations 
 import {isString} from '../validator/validator.ts';
 
 const Brand = db.collection<BrandModel>('brands');
@@ -34,16 +38,20 @@ const createBrand = async ({request, response} : Context)  =>  {
     else{
       if(isString(bodyData.name)){
         
-        var name = bodyData.name
+        let brand : BrandModel = {
+          name : bodyData.name,
+          products : []
+        }
         
-        await Brand.insertOne({ 
-          name
-        })
+        await Brand.insertOne( 
+          brand
+        )
         
         response.status = 201;
         response.body = {
           success: "Success with creating the brand",
         };
+        
       }
       else{
         response.status =404;
