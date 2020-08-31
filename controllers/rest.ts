@@ -92,6 +92,12 @@ const addProductToBrand = async ({request, response} : Content) => {
 				brand : findBrand
 			}
 		}
+		else{
+			response.status = 404
+			response.body = {
+				message : "We didnt found the brand id provided"
+			}
+		}	
 	}
 
 
