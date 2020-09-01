@@ -7,7 +7,7 @@ import BrandModel from '../models/brand.ts';
 //import validations 
 import {isString} from '../validator/validator.ts';
 
-const Brand = db.collection<BrandModel>('brands');
+const Brand = db.collection('brands');
 
 //@desc get all brands
 //@route GET /brands
@@ -65,46 +65,51 @@ const createBrand = async ({request, response} : Context)  =>  {
 
 //@desc add a product 
 //@route POST /brand/add/product
-const addProductToBrand = async ({request, response} : Content) => {
-	
-	//receive body request
-	const bodyData = await request.body().value;
-	
-	//validate if request has body
-	if(!request.hasBody){
-		response.status = 404;
-      
-		response.body = {
-			success: false,
-			data: "No data provided",
-		};
-	}
-	else{
-		const findBrand = await Brand.findOne({
-			_id : {
-				$oid:bodyData.brandId
-			}
-		});
+const addProductToBrand = async ({request, response} : Context) => {
+  
+    try {
+        //receive body request
+        const bodyData = await request.body().value;
 
-		if(findBrand){
-			response.status = 200;
-			response.body = {
-				brand : findBrand
-			}
-		}
-		else{
-			response.status = 404
-			response.body = {
-				message : "We didnt found the brand id provided"
-			}
-		}	
-	}
+        //validate if request has body
+        if(!request.hasBody){
 
-
+            response.status = 404;
+                
+            response.body = {
+                success: false,
+                data: "No data provided",
+            };
+        }
+        else{
+            console.log(bodyData.brandId)
+            
+            const brand = await Brand.findOne({ _id: { "$oid": bodyData.brandId } });
+            
+            if(brand){
+                response.status = 200;
+                
+                response.body = {
+                    success: true,
+                    data: brand,
+                };
+            }
+            else{
+              response.status = 404;
+                
+                response.body = {
+                    success: false,
+                    message : 'We dont found nothing',
+                };
+            }
+        }
+    } catch (error) {
+        console.log("hola");
+    }
 }
-
 
 export {
   getBrands,
-  createBrand
+  createBrand,
+  addProductToBrand
 };
