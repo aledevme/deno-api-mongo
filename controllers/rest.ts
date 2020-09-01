@@ -7,13 +7,12 @@ import BrandModel from '../models/brand.ts';
 //import validations 
 import {isString} from '../validator/validator.ts';
 
-const Brand = db.collection('brands');
+const Brand = db.collection<BrandModel>('brands');
 
 //@desc get all brands
 //@route GET /brands
-const getBrands = async ({ request, response }: Context)  =>  {
+const getBrands = async ({ request, response } : Context)  =>  {
     const brands = await Brand.find();
-    
     response.status = 200;
     response.body = {
       success: true,
@@ -28,16 +27,17 @@ const createBrand = async ({request, response} : Context)  =>  {
 	//receive body request
     const bodyData = await request.body().value;
 
-    if(!request.hasBody){
+    if (!request.hasBody) {
       response.status = 404;
       
       response.body = {
         success: false,
         data: "No data provided",
       };
-    }
-    else{
-      if(isString(bodyData.name)){
+    
+    } else {
+      
+      if( isString(bodyData.name) ){
         
         let brand : BrandModel = {
           name : bodyData.name,
@@ -53,12 +53,13 @@ const createBrand = async ({request, response} : Context)  =>  {
           success: "Success with creating the brand",
         };
         
-      }
-      else{
+      } else {
+
         response.status =404;
         response.body = {
           success: "Type of data is incorrect",
         };
+      
       }
     }
 }
@@ -72,7 +73,7 @@ const addProductToBrand = async ({request, response} : Context) => {
         const bodyData = await request.body().value;
 
         //validate if request has body
-        if(!request.hasBody){
+        if( !request.hasBody ){
 
             response.status = 404;
                 
@@ -80,22 +81,20 @@ const addProductToBrand = async ({request, response} : Context) => {
                 success: false,
                 data: "No data provided",
             };
-        }
-        else{
+        } else {
             console.log(bodyData.brandId)
             
             const brand = await Brand.findOne({ _id: { "$oid": bodyData.brandId } });
             
-            if(brand){
+            if (brand) {
                 response.status = 200;
                 
                 response.body = {
                     success: true,
                     data: brand,
                 };
-            }
-            else{
-              response.status = 404;
+            } else {
+                response.status = 404;
                 
                 response.body = {
                     success: false,
