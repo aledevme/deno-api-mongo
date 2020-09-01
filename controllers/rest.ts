@@ -41,12 +41,12 @@ const createBrand = async ({request, response} : Context)  =>  {
         
         let brand : BrandModel = {
           name : bodyData.name,
-          products : [];
+          products : []
         }
         
         await Brand.insertOne( 
           brand
-        )
+        );
         
         response.status = 201;
         response.body = {
@@ -55,7 +55,7 @@ const createBrand = async ({request, response} : Context)  =>  {
         
       } else {
 
-        response.status =404;
+        response.status = 404;
         response.body = {
           success: "Type of data is incorrect",
         };
@@ -81,29 +81,71 @@ const addProductToBrand = async ({request, response} : Context) => {
                 success: false,
                 data: "No data provided",
             };
+
         } else {
-            console.log(bodyData.brandId)
+          
+          //regex rule if id is valid
+          var myregexp = /^[0-9a-fA-F]{24}$/
+           
+          //validate id mongo
+          if ( bodyData.brandId.match(myregexp) ) {
             
+            //verify if id exist
             const brand = await Brand.findOne({ _id: { "$oid": bodyData.brandId } });
-            
-            if (brand) {
-                response.status = 200;
+          
+              if (brand) {
                 
-                response.body = {
-                    success: true,
-                    data: brand,
-                };
+                //update array products
+                const addProduct = await Brand.updateOne(
+                  { _id: { "$oid": bodyData.brandId } },
+                  {
+                    $set : {
+                      "products" : bodyData.products
+                    }
+                  }
+                );
+              
+                if (addProduct) {
+                  response.status = 200;
+                
+                  response.body = {
+                      success: true,
+                      data: brand,
+                  };
+                } else { 
+                  response.status = 400;
+                
+                  response.body = {
+                      success: false,
+                      message: "Brand didnt add product",
+                  };
+                }
+
             } else {
-                response.status = 404;
-                
-                response.body = {
-                    success: false,
-                    message : 'We dont found nothing',
-                };
+              response.status = 400;
+                  
+              response.body = {
+                  success: false,
+                  message: "We didnt found the brand",
+              };
+            }
+
+          } else {
+              response.status = 400;
+              
+              response.body = {
+                  success: false,
+                  message : 'Identifier invalid',
+              };
             }
         }
-    } catch (error) {
-        console.log("hola");
+    } catch (err) {
+      response.status = 500;
+              
+      response.body = {
+          success: false,
+          message : "Something was happened",
+      };
     }
 }
 
