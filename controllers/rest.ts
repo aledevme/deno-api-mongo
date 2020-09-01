@@ -24,7 +24,7 @@ const getBrands = async ({ request, response } : Context)  =>  {
 //@route POST /brand
 const createBrand = async ({request, response} : Context)  =>  {
 	
-	//receive body request
+	  //receive body request
     const bodyData = await request.body().value;
 
     if (!request.hasBody) {
@@ -41,7 +41,7 @@ const createBrand = async ({request, response} : Context)  =>  {
         
         let brand : BrandModel = {
           name : bodyData.name,
-          products : []
+          products : [];
         }
         
         await Brand.insertOne( 
