@@ -20,6 +20,29 @@ const getBrands = async ({ request, response } : Context)  =>  {
     };
 };
 
+//@desc get one brand
+//@route GET /brand/:id
+
+const getBrand = async ({request, response} : Context) => {
+    
+    const params = await request.params().value;
+    
+    const brand = await Brand.findOne({ _id: { "$oid": params.id  } });
+
+    if (brand) {
+      response.status = 201;
+      response.body = {
+        brand : brand
+      };
+    } else {
+      response.status = 404;
+      response.body = {
+        message : 'We didnt found the brand';
+      };
+    }
+}
+
+
 //@desc add a brand
 //@route POST /brand
 const createBrand = async ({request, response} : Context)  =>  {
@@ -110,7 +133,7 @@ const addProductToBrand = async ({request, response} : Context) => {
                 
                   response.body = {
                       success: true,
-                      data: brand,
+                      message: "Product added to brand",
                   };
                 } else { 
                   response.status = 400;
