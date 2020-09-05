@@ -311,5 +311,5 @@ export {
   getBrand,
   addProductToBrand,
   updateBrand,
-  deleteBrand
+  deleteBrand 
 };

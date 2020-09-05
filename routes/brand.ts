@@ -1,5 +1,7 @@
-//import router from deno package
+//import router base
 import { Router } from "https://deno.land/x/oak/mod.ts";
+//instance of router
+const router = new Router();
 //import actions from a controller
 import { 
     getBrands, 
@@ -8,11 +10,7 @@ import {
     getBrand, 
     updateBrand,
     deleteBrand
-} from "../controllers/rest.ts";
-
-
-//instance of router
-const router = new Router();
+} from "../controllers/BrandController.ts";
 
 //declarating routes of our API
 router

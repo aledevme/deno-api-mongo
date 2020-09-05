@@ -1,6 +1,6 @@
 interface Brand{
     name: string;
-    products:[]
+    products:[];
 }
 
 export default Brand
