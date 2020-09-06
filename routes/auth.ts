@@ -3,10 +3,12 @@ import { Router } from "https://deno.land/x/oak/mod.ts";
 const router = new Router();
 
 import { 
-    register
+    register,
+    login
 } from "../controllers/authController.ts";
 
 router
     .post('/register', register)
+    .post('/login', login)
 
 export default router

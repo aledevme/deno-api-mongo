@@ -24,7 +24,7 @@ const register = async ({request, response}: Context) => {
         
         if (user.validate(userData)) {
             
-            const signUp = user.register(userData);
+            const signUp = await user.register(userData);
             
             if (signUp) {
                 response.status = 200;
@@ -32,12 +32,13 @@ const register = async ({request, response}: Context) => {
                 response.body = {
                     success: true,
                     data: 'user has been created',
+                    user: signUp
                 };
             } else {
                 response.status = 500;
         
                 response.body = {
-                    success: true,
+                    success: false,
                     data: 'user has not been created',
                 };
             }
@@ -47,7 +48,70 @@ const register = async ({request, response}: Context) => {
             response.status = 400;
         
             response.body = {
-                success: true,
+                success: false,
+                data: 'user not been defined',
+            };
+        }
+    }
+}
+
+const login = async ({request, response}: Context) => {
+    
+    if (!request.hasBody) {
+        
+        response.status = 404;
+      
+        response.body = {
+          success: false,
+          data: "No data provided",
+        };
+
+    } else {
+
+        const { email, password } = await request.body().value;
+
+        let userData = {
+            email: email, 
+            password: password
+        };
+
+        if (user.validate(userData)) {
+
+            const findUser = await user.findUser(email);
+            
+            if (findUser) {
+                
+                const logIn = await user.login(password, findUser);
+            
+                if (logIn) {
+                    response.status = 200;
+            
+                    response.body = {
+                        success: true,
+                        data: logIn,
+                    };
+                } else {
+                    response.status = 404;
+                    response.body = {
+                        success: false,
+                        data: 'Unable to logged in',
+                    };
+                }
+
+            } else {
+                response.status = 404;
+                response.body = {
+                    success: false,
+                    data: 'User dont exist',
+                };
+            }
+
+            
+        } else {
+            response.status = 400;
+        
+            response.body = {
+                success: false,
                 data: 'user not been defined',
             };
         }
@@ -55,5 +119,6 @@ const register = async ({request, response}: Context) => {
 }
 
 export {
-    register
+    register,
+    login
 }
