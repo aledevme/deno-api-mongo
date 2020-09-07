@@ -12,9 +12,11 @@ import {
     deleteBrand
 } from "../controllers/BrandController.ts";
 
+import validateJwtToken from './middlewares/jwtMiddleware.ts';
+
 //declarating routes of our API
 router
-    .get("/brands", getBrands)
+    .get("/brands", validateJwtToken ,getBrands)
     .post("/brand", createBrand)
     .get("/brands/:id", getBrand)
     .post("/brand/product/add", addProductToBrand)

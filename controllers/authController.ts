@@ -1,8 +1,7 @@
-import { Context } from 'https://deno.land/x/oak/mod.ts'
+import { Context } from 'https://deno.land/x/oak/mod.ts';
 
 import User from '../models/user.ts';
 
-import { validateJwt } from "https://deno.land/x/djwt/validate.ts";
 import { makeJwt, setExpiration, Jose, Payload } from "https://deno.land/x/djwt/create.ts";
 
 import { config } from "https://deno.land/x/dotenv/mod.ts";
@@ -110,7 +109,6 @@ const login = async ({request, response}: Context) => {
                         key : DENO_JWT_KEY
                     })
 
-                    console.log(token);
         
                     response.status = 200;
                     response.body = {
