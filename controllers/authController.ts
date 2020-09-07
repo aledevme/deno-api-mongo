@@ -2,6 +2,11 @@ import { Context } from 'https://deno.land/x/oak/mod.ts'
 
 import User from '../models/user.ts';
 
+import { validateJwt } from "https://deno.land/x/djwt/validate.ts";
+import { makeJwt, setExpiration, Jose, Payload } from "https://deno.land/x/djwt/create.ts";
+
+import { config } from "https://deno.land/x/dotenv/mod.ts";
+
 const user = new User;
 
 const register = async ({request, response}: Context) => {
@@ -84,11 +89,34 @@ const login = async ({request, response}: Context) => {
                 const logIn = await user.login(password, findUser);
             
                 if (logIn) {
+
+                    const {DENO_JWT_KEY} = config();
+
+                    const map = new Map(Object.entries(userData));
+
+                    const payload : Payload = {
+                        iss : `${map.get('email')} ${map.get('password')}`,
+                        exp : setExpiration(60*60)
+                    };
+        
+                    const header: Jose = {
+                        alg : 'HS256',
+                        typ : 'JWT'
+                    };
+        
+                    const token = await makeJwt({
+                        header,
+                        payload, 
+                        key : DENO_JWT_KEY
+                    })
+
+                    console.log(token);
+        
                     response.status = 200;
-            
                     response.body = {
                         success: true,
-                        data: logIn,
+                        user: findUser,
+                        token: token
                     };
                 } else {
                     response.status = 404;

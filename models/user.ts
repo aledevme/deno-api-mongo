@@ -13,6 +13,7 @@ class UserClass {
 
     validate = (userData : User) => {
         try {
+            
             const email = userData.email;
             const password = userData.password;
             
