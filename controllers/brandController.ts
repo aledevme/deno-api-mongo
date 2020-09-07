@@ -72,14 +72,14 @@ const createBrand = async ({request, response} : Context)  =>  {
       };
     
     } else {
-      
+      //validate the brand name
       if( isString(bodyData.name) ){
-        
+        //create an interface
         let brand : BrandModel = {
           name : bodyData.name,
           products : []
         }
-        
+        //save the brand
         await Brand.insertOne( 
           brand
         );
@@ -100,7 +100,7 @@ const createBrand = async ({request, response} : Context)  =>  {
     }
 }
 
-//@desc add a product 
+//@desc add a product to brand
 //@route POST /brand/add/product
 const addProductToBrand = async ({request, response} : Context) => {
   
@@ -180,20 +180,20 @@ const addProductToBrand = async ({request, response} : Context) => {
     }
 }
 
-//@desc add a product 
+//@desc edit a brand 
 //@route PUT /brand/:id
 const updateBrand = async ({
   request,
   response,
   params,
 }: Context | any) => {
-  
+    //get id brand
     const {id} = params;
-    
+    //get the body data request
     const bodyData = await request.body().value;
-  
+    //verify if the id is valid
     if ( isValidId(id) ){
-    
+        //find the brand
         const brand = await Brand.findOne({ _id: { "$oid": id  } });  
 
         if ( brand ) {
@@ -207,7 +207,11 @@ const updateBrand = async ({
                 };
               
             } else {
+
+                //validate the name brand
                 if  ( isString(bodyData.name) ) { 
+
+                    //update the name
                     const { modifiedCount } = await Brand.updateOne({
                         _id: { "$oid": id  }
                     },{
@@ -257,6 +261,9 @@ const updateBrand = async ({
     };
   }
 }
+
+//@desc delete a brand 
+//@route DELETE /brand/:id
 
 const deleteBrand = async ({
   response, 

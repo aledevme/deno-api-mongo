@@ -7,6 +7,7 @@ import {
     login
 } from "../controllers/authController.ts";
 
+//declarating auth routes of our API
 router
     .post('/register', register)
     .post('/login', login)
